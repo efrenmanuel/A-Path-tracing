@@ -41,7 +41,6 @@ public class Toolbar extends javax.swing.JPanel {
         jPanel1 = new javax.swing.JPanel();
         btstop = new javax.swing.JButton();
         btstart = new javax.swing.JButton();
-        btpause = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jSpinner1 = new javax.swing.JSpinner();
         jSeparator1 = new javax.swing.JSeparator();
@@ -58,6 +57,11 @@ public class Toolbar extends javax.swing.JPanel {
         jPanel1.setLayout(new java.awt.GridLayout(1, 0));
 
         btstop.setText("Stop");
+        btstop.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btstopActionPerformed(evt);
+            }
+        });
         jPanel1.add(btstop);
 
         btstart.setText("Start");
@@ -67,14 +71,6 @@ public class Toolbar extends javax.swing.JPanel {
             }
         });
         jPanel1.add(btstart);
-
-        btpause.setText("Pause");
-        btpause.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btpauseActionPerformed(evt);
-            }
-        });
-        jPanel1.add(btpause);
 
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.TRAILING);
         jLabel1.setText("Delay:");
@@ -143,10 +139,6 @@ public class Toolbar extends javax.swing.JPanel {
         add(jPanel2);
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btpauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btpauseActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_btpauseActionPerformed
-
     private void btstartPointActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btstartPointActionPerformed
         updater.setBrush(100);
     }//GEN-LAST:event_btstartPointActionPerformed
@@ -174,12 +166,15 @@ updater.setBrush(0);    }//GEN-LAST:event_btEraserActionPerformed
         updater.setDelay((Integer)jSpinner1.getValue());
     }//GEN-LAST:event_jSpinner1StateChanged
 
+    private void btstopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btstopActionPerformed
+        updater.stop();
+    }//GEN-LAST:event_btstopActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btEraser;
     private javax.swing.JButton btclear;
     private javax.swing.JButton btendPoint;
-    private javax.swing.JButton btpause;
     private javax.swing.JButton btstart;
     private javax.swing.JButton btstartPoint;
     private javax.swing.JButton btstop;

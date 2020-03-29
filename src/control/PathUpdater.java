@@ -33,12 +33,12 @@ public class PathUpdater implements Runnable, ActionListener, MouseListener, Mou
     private final Timer TIMER;
     private int PIXELSIZE;
     private boolean running;
-    private  Node[][] grid;
+    private Node[][] grid;
     private int drawingWith = 1;
     private Point startPoint, endPoint;
     private PathPanel panel;
-    
-    private int delay=0;
+
+    private int delay = 0;
 
     private List<Node> active, closed;
 
@@ -48,7 +48,7 @@ public class PathUpdater implements Runnable, ActionListener, MouseListener, Mou
         this.TIMER = TIMER;
         TIMER.start();
         PIXELSIZE = pixelSize;
-        this.panel=panel;
+        this.panel = panel;
     }
 
     public void setBrush(int newBrush) {
@@ -63,12 +63,13 @@ public class PathUpdater implements Runnable, ActionListener, MouseListener, Mou
                 grid[line][pixel].setCost(0);
             }
         }
-        
-        startPoint=null;
-        endPoint=null;
+
+        startPoint = null;
+        endPoint = null;
     }
 
     public void restart() {
+        running=true;
         for (int line = grid.length - 1; line >= 0; line--) {
 
             for (int pixel = 0; pixel < grid[line].length; pixel++) {
@@ -83,7 +84,7 @@ public class PathUpdater implements Runnable, ActionListener, MouseListener, Mou
 
                 }
                 grid[line][pixel].setCost(0);
-                
+
             }
         }
     }
@@ -143,7 +144,7 @@ public class PathUpdater implements Runnable, ActionListener, MouseListener, Mou
             boolean arrived = false;
 
             active.add(grid[startPoint.y][startPoint.x]);
-            while (!arrived) {
+            while (!arrived && running) {
                 Node current = active.get(0);
                 if (current.getType() != 100 && current.getType() != 200) {
                     current.setType(3);
@@ -162,7 +163,7 @@ public class PathUpdater implements Runnable, ActionListener, MouseListener, Mou
                             continue;
                         }
                         Node scanning = grid[current.getPosition().y + y][current.getPosition().x + x];
-                        if (closed.contains(scanning)|| scanning.getType() == 1 ||scanning.getType()==100) {
+                        if (closed.contains(scanning) || scanning.getType() == 1 || scanning.getType() == 100) {
                             continue;
                         }
                         if (scanning.getType() == 200) {
@@ -171,25 +172,25 @@ public class PathUpdater implements Runnable, ActionListener, MouseListener, Mou
                         }
                         scanning.setType(5);
                         try {
-                            Thread.sleep(delay*10);
+                            Thread.sleep(delay * 10);
                         } catch (InterruptedException ex) {
                             Logger.getLogger(PathUpdater.class.getName()).log(Level.SEVERE, null, ex);
                         }
                         int dx = Math.abs(endPoint.x - scanning.getPosition().x);
                         int dy = Math.abs(endPoint.y - scanning.getPosition().y);
 
-                        double D=1;
-                        double D2=1.4;
+                        double D = 1;
+                        double D2 = 1.4;
                         double heuristic = D * (dx + dy) + (D2 - 2 * D) * Integer.min(dx, dy);
 
                         double step;
-                        if (x * y== 0) {
+                        if (x * y == 0) {
                             step = 1;
                         } else {
                             step = 1.4;
                             System.out.println("diag");
                         }
-                        double g =(current.getG() + step);
+                        double g = (current.getG() + step);
                         double cost = g + heuristic;
                         if (scanning.getCost() == 0 || g < scanning.getG()) {
                             scanning.setCost(cost);
@@ -202,8 +203,7 @@ public class PathUpdater implements Runnable, ActionListener, MouseListener, Mou
                                 active.add(scanning);
                                 closed.remove(scanning);
                             }
-                        }
-                        else if (!closed.contains(scanning) && !active.contains(scanning)){
+                        } else if (!closed.contains(scanning) && !active.contains(scanning)) {
                             active.add(scanning);
                         }
                         scanning.setType(2);
@@ -258,12 +258,12 @@ public class PathUpdater implements Runnable, ActionListener, MouseListener, Mou
                     endPoint = new Point(p.x / PIXELSIZE, p.y / PIXELSIZE);
                     break;
                 case 0:
-                    switch (grid[startPoint.y][startPoint.x].getType()){
+                    switch (grid[startPoint.y][startPoint.x].getType()) {
                         case 100:
-                            startPoint=null;
+                            startPoint = null;
                             break;
                         case 200:
-                            endPoint=null;
+                            endPoint = null;
                             break;
                         default:
                             break;
@@ -275,9 +275,13 @@ public class PathUpdater implements Runnable, ActionListener, MouseListener, Mou
             grid[p.y / PIXELSIZE][p.x / PIXELSIZE].setType(drawingWith);
         }
     }
-    
-    public void setDelay(int delay){
-        this.delay=delay;
+
+    public void setDelay(int delay) {
+        this.delay = delay;
+    }
+
+    public void stop() {
+        this.running = false;
     }
 
 }
